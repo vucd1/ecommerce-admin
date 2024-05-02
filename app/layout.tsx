@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+
+import { ModalProvider } from "@/providers/modal-providers";
+
+import "./globals.css";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +22,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          {/* The store modal will appear on each page automatically. */}
+          <ModalProvider />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
