@@ -49,7 +49,11 @@ export const StoreModal = () => {
             // this will disable the buttons temporarily
             setLoading(true);
             const response = await axios.post('/api/stores', values);
-            toast.success('Store created successfully.');
+
+            // window.location.assign does a complete refresh of the page.
+            // If you use the next router, data won't be ready and modal won't be
+            //    open in the dashboard which is something we don't want.
+            window.location.assign(`/${response.data.id}`);
         }
         catch (error) {
             toast.error('Something went wrong.');

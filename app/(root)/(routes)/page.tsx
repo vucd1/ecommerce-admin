@@ -1,8 +1,8 @@
+// This page is only used to trigger the store modal.
+
 'use client';
 
 import { useEffect } from 'react';
-
-
 import { useStoreModal } from '@/hooks/use-store-modal';
 
 
@@ -24,11 +24,7 @@ const SetupPage = () => {
   // This ensures the modal opens if it's not already open.
   [isOpen, onOpen]);
   
-  return (
-    <div className="p-4">
-        Root Page
-    </div>
-  );
+  return null;
 }
 
 export default SetupPage;
