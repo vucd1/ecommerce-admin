@@ -86,7 +86,7 @@ export const StoreModal = () => {
                                     <FormLabel>Name</FormLabel>
                                     <FormControl>
                                         {/* If page is still loading, disable the button */}
-                                        <Input 
+                                        <Input
                                             disabled={loading} 
                                             placeholder="E-commerce" 
                                             {...field} 
