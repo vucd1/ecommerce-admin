@@ -110,7 +110,7 @@ export default function StoreSwitcher({
                     <CommandList>
                         <CommandGroup>
                             <CommandItem
-                                onClick={() => {
+                                onSelect={() => {
                                     setOpen(false);
                                     storeModal.onOpen();
                                 }}
