@@ -26,6 +26,7 @@ import {
     FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { AlertModal } from "@/components/modals/alert-modal";
 
 
 interface SettingsFormProps {
@@ -81,8 +82,39 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
         }
     };
 
+    const onDelete = async () => {
+        try {
+         setLoading(true);
+         await axios.delete(`/api/stores/${params.storeId}`);         
+
+         // Push user to the default root. In (root)/layout.tsx, it'll execute prismadb.store.findFirst to
+         // find and redirect an existing store the user has.
+         // If there are no existing stores, it'll redirect user to the Create Store Modal. This is working
+         // in (root)/(routes)/page.tsx
+         router.push("/"); // Navigate to new path
+         router.refresh(); // Then refresh the page to reflect the latest changes.
+
+         toast.success("Store deleted.")
+        }
+        catch (error) {
+            // This is a safety feature to ensure that users won't just delete all their products.
+            // This will be handled in our Prisma database.
+            toast.error("Make sure you removed all products and categories first.");
+        }
+        finally {
+            setLoading(false);
+            setOpen(false);
+        }
+    }
+
     return (
         <>
+            <AlertModal 
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                onConfirm={onDelete}
+                loading={loading}
+            />
             <div className="flex items-center justify-between">
                 <Heading
                     title='Settings'
@@ -91,10 +123,11 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                 <Button
                     disabled={loading}
                     variant='destructive'
-                    size='icon'
+                    size='default'
                     onClick={() => setOpen(true)}
                 >
                     <Trash className="h-4 w-4" />
+                    <p className="pl-1">Delete Store</p>
                 </Button>
             </div>
 

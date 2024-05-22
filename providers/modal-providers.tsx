@@ -15,7 +15,7 @@ export const ModalProvider = () => {
         return null;
     }
 
-    // If isMounted is true,this return funciton is to avoid hydration 
+    // If isMounted is true, this return function is to avoid hydration 
     // errors with app/layout.tsx which is a server-side rendering file.
     // Wait for SSR components to render first, then render StoreModal. 
     return (
