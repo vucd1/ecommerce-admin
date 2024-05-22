@@ -17,7 +17,8 @@ const Navbar = async () => {
     redirect('/login');
   }
 
-  const store = await prismadb.store.findMany({
+  // Find a list of store(s) that the active user has.
+  const stores = await prismadb.store.findMany({
     where: {
       userId, //shorthand for userId: userId
     }
@@ -26,7 +27,7 @@ const Navbar = async () => {
   return (
     <div className='border-b'>
         <div className='flex h-16 items-center px-4'>
-            <StoreSwitcher />
+            <StoreSwitcher items={stores}/>
             <MainNav className="mx-6" />
             <div className='ml-auto flex items-center space-x-4'>
                 <UserButton afterSignOutUrl="/"/>
