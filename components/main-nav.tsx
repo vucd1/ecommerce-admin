@@ -20,6 +20,12 @@ export function MainNav({
 
     const routes = [
         {
+            href: `/${params.storeId}`,
+            label: 'Overview',
+            // use the strict equality operator. checks both the value and type.
+            active: pathname === `/${params.storeId}`
+        },
+        {
             href: `/${params.storeId}/settings`,
             label: 'Settings',
             // use the strict equality operator. checks both the value and type.
