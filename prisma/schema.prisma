@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -11,9 +10,24 @@ datasource db {
 }
 
 model Store {
-  id        String    @id @default(uuid())
-  name      String
-  userId    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String    @id @default(uuid())
+  name        String
+  userId      String
+  billboards  Billboard[] @relation("StoreToBillboard")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Billboard {
+  id          String @id @default(uuid())
+  storeId     String
+  // Fields: Specifies which field in the current model (the model where @relation is defined) serves as 
+  // the foreign key to establish the relationship.
+  // References: Specifies which field in the related model (specified in the @relation annotation) 
+  // is being referenced by the foreign key.
+  store       Store @relation("StoreToBillboard", fields: [storeId], references: [id])
+  label       String
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
