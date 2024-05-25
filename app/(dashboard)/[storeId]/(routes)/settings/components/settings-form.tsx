@@ -28,6 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 
 interface SettingsFormProps {
@@ -47,7 +48,8 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     initialData // This is needed to pass our store data into this arrow function.
 }) => {
     const params = useParams();
-    const router= useRouter();
+    const router = useRouter();
+    const origin = useOrigin();
     
     // Hooks for our Alert modal
     const [open, setOpen] = useState(false);
