@@ -4,7 +4,7 @@
 
 "use client"
 
-import { Store } from "@prisma/client";
+import { Billboard } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { z } from "zod"; // For shadcn form
 import { useForm } from "react-hook-form";
@@ -31,21 +31,21 @@ import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
 
 
-interface SettingsFormProps {
-    initialData: Store;
-}
-
 // For shadcn form
 const formSchema = z.object({
-    name: z.string().min(1),
+    label: z.string().min(1),
+    imageUrl: z.string().min(1),
 });
 
 // For type inference. So we don't have to type the type out every time we use it.
-type SettingsFormValues = z.infer<typeof formSchema>;
+type BillboardFormValues = z.infer<typeof formSchema>;
 
+interface BillboardFormProps {
+    initialData: Billboard | null;
+}
 
-export const SettingsForm: React.FC<SettingsFormProps> = ({
-    initialData // This is needed to pass our store data into this arrow function.
+export const BillboardForm: React.FC<BillboardFormProps> = ({
+    initialData // This is needed to pass our billboard  data into this arrow function.
 }) => {
     const params = useParams();
     const router = useRouter();
@@ -55,14 +55,22 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const title = initialData ? "Edit billboard" : "Create billboard";
+    const description = initialData ? "Edit a billboard" : "Add a new billboard";
+    const toastMessage = initialData ? "Billboard updated." : "Billboard created.";
+    const action = initialData ? "Save changes" : "Create";
+
     // Zod setp for our form
-    const form = useForm<SettingsFormValues>({
+    const form = useForm<BillboardFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData // We're passing the store in as the default value.
+        defaultValues: initialData || {
+            label: "",
+            imageUrl: ""
+        }
     });
 
     // Define a submit event handler
-    const onSubmit = async (data: SettingsFormValues) => {
+    const onSubmit = async (data: BillboardFormValues) => {
         try {
             setLoading(true);
 
@@ -120,18 +128,22 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             />
             <div className="flex items-center justify-between">
                 <Heading
-                    title='Settings'
-                    description='Manage store preferences'
+                    title={title}
+                    description={description}
                 />
-                <Button
-                    disabled={loading}
-                    variant='destructive'
-                    size='default'
-                    onClick={() => setOpen(true)}
-                >
-                    <Trash className="h-4 w-4" />
-                    <p className="pl-1">Delete Store</p>
-                </Button>
+                {/* Only render the delete button if initialData exists. React's conditional rendering. */}
+                {initialData && (
+                    <Button
+                        disabled={loading}
+                        variant='destructive'
+                        size='default'
+                        onClick={() => setOpen(true)}
+                    >
+                        <Trash className="h-4 w-4" />
+                        <p className="pl-1">Delete Store</p>
+                    </Button>
+                )}
+
             </div>
 
             <Separator />
@@ -143,13 +155,13 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                             // form.control contains methods for registering components into React Hook Form.
                             // Don't access any of the properties inside the object directly. Only for internal usage.
                             control={form.control}
-                            name="name"
+                            name="label"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>Label</FormLabel>
                                     <FormControl>
                                         {/* Disable this input when the form is loading */}
-                                        <Input disabled={loading} placeholder="Store name" {...field} />
+                                        <Input disabled={loading} placeholder="Billboard label" {...field} />
                                     </FormControl>
                                     {/* This is for error handling incorrect inputs */}
                                     <FormMessage />
@@ -159,16 +171,11 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                     </div>
                     {/* The type='submit' will automatically trigger the form.handleSubmit... above */}
                     <Button disabled={loading} className="ml-auto" type="submit">
-                        Save changes
+                        {action}
                     </Button>
                 </form>
             </Form>
             <Separator />
-            <ApiAlert
-                title="NEXT_PUBLIC_API_URL" 
-                description={`${origin}/api/${params.storeId}`}
-                variant="public"
-            />
         </>
     )
 }

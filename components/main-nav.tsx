@@ -26,11 +26,17 @@ export function MainNav({
             active: pathname === `/${params.storeId}`
         },
         {
+            href: `/${params.storeId}/billboards`,
+            label: 'Billboards',
+            // use the strict equality operator. checks both the value and type.
+            active: pathname === `/${params.storeId}/billboards`
+        },
+        {
             href: `/${params.storeId}/settings`,
             label: 'Settings',
             // use the strict equality operator. checks both the value and type.
             active: pathname === `/${params.storeId}/settings`
-        }
+        },
     ];
 
     return (
