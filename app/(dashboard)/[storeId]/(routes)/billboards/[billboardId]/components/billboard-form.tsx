@@ -27,9 +27,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
-
+import ImageUpload from "@/components/ui/image-upload";
 
 // For shadcn form
 const formSchema = z.object({
@@ -150,6 +149,27 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+                    <FormField
+                        // form.control contains methods for registering components into React Hook Form.
+                        // Don't access any of the properties inside the object directly. Only for internal usage.
+                        control={form.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Background Image</FormLabel>
+                                <FormControl>
+                                    <ImageUpload
+                                        value={field.value ? [field.value] : []}
+                                        disabled={loading}
+                                        onChange={(url) => field.onChange(url)}
+                                        onRemove={() => field.onChange("")}
+                                    />
+                                </FormControl>
+                                {/* This is for error handling incorrect inputs */}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <div className="grid grid-cols-3 gap-8">
                         <FormField
                             // form.control contains methods for registering components into React Hook Form.
