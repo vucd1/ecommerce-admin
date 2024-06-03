@@ -73,15 +73,22 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
         try {
             setLoading(true);
 
-            // The params we defined here matches with the folder structure: /api/store/[storeId]
-            // We're targeting the PATCH and DELETE functions located in that file.
-            await axios.patch(`/api/stores/${params.storeId}`, data);
+            // PATCH is used to partially update and existing resource with new data.
+            if (initialData) {
+                await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data);
+            }
+            // If initialData does not exist, create a new billboard with the new data.
+            else {
+                await axios.post(`/api/${params.storeId}/billboards`, data);
+            }
 
             // Triggers a reload of the current page/route in the client's browser. Useful when you
             // need to update displayed content based on new data or changes in the application state.
             router.refresh();
 
-            toast.success("Store updated.");
+            // After updating, redirect user to the main billboard page.
+            router.push(`/${params.storeId}/billboards`);
+            toast.success(toastMessage);
         }
         catch (error) {
             toast.error("Something went wrong.");
@@ -95,7 +102,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
     const onDelete = async () => {
         try {
          setLoading(true);
-         await axios.delete(`/api/stores/${params.storeId}`);         
+         await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
 
          // Push user to the default root. In (root)/layout.tsx, it'll execute prismadb.store.findFirst to
          // find and redirect an existing store the user has.
@@ -109,7 +116,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
         catch (error) {
             // This is a safety feature to ensure that users won't just delete all their products.
             // This will be handled in our Prisma database.
-            toast.error("Make sure you removed all products and categories first.");
+            toast.error("Make sure you removed all categories using this billboard first.");
         }
         finally {
             setLoading(false);
